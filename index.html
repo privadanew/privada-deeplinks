@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Opening Privada App...</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            text-align: center; 
+            padding: 50px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        .logo { font-size: 48px; margin-bottom: 20px; }
+        .title { font-size: 28px; margin-bottom: 10px; font-weight: 600; }
+        .subtitle { font-size: 16px; opacity: 0.8; margin-bottom: 30px; }
+        .loading { 
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .download-btn {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 25px;
+            margin: 10px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        .download-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        #download-section { 
+            display: none; 
+            margin-top: 30px; 
+        }
+        .status { margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🚀</div>
+        <div class="title">Opening Privada App</div>
+        <div class="subtitle">Please wait while we redirect you...</div>
+        
+        <div class="status">
+            <span class="loading"></span>
+            <span id="status-text">Attempting to open app...</span>
+        </div>
+        
+        <div id="download-section">
+            <div style="margin-bottom: 20px;">
+                <strong>App not installed?</strong>
+            </div>
+            <div>
+                <a href="https://play.google.com/store/apps/details?id=com.your.package.name" class="download-btn">
+                    📱 Get Android App
+                </a>
+                <a href="https://apps.apple.com/app/your-app-id" class="download-btn">
+                    🍎 Get iOS App
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            const results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
+        // Get the token from URL
+        const token = getUrlParameter('t');
+        const statusText = document.getElementById('status-text');
+        
+        if (token) {
+            console.log('Token found:', token);
+            
+            // Try to open the app with custom scheme
+            setTimeout(() => {
+                statusText.textContent = 'Opening Privada app...';
+                window.location.href = `privada://i?t=${token}`;
+            }, 500);
+            
+            // Show download options after 2 seconds
+            setTimeout(() => {
+                statusText.textContent = 'App taking too long to open?';
+                document.getElementById('download-section').style.display = 'block';
+            }, 2000);
+            
+        } else {
+            statusText.textContent = 'No invite token found';
+            setTimeout(() => {
+                document.getElementById('download-section').style.display = 'block';
+            }, 1000);
+        }
+
+        // Handle page visibility change (detect if user returned from app)
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                statusText.textContent = 'Welcome back! Did the app open?';
+            }
+        });
+    </script>
+</body>
+</html>
